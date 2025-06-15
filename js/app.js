@@ -8,7 +8,7 @@
 
 const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID_HERE.apps.googleusercontent.com';
 const APPLE_CLIENT_ID  = 'com.yourapp.memorytv';
-const APPLE_REDIRECT_URI = 'https://YOUR_USERNAME.github.io/memorytv/callback';
+const APPLE_REDIRECT_URI = 'https://mnk-nasir.github.io/memorytv/callback';
 
 // ── SOURCE CSS CLASS MAP ──────────────────────────────────────────────
 function srcClass(s) {

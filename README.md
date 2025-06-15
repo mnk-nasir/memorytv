@@ -6,6 +6,28 @@
 
 ---
 
+## 🏗️ Architecture
+
+```mermaid
+graph TD
+    User((User)) -->|Authenticate| Auth[Auth Manager: Google/Apple]
+    Auth -->|Fetch Metadata| Drive[Google Drive API]
+    Auth -->|Fetch Media| Photos[Google Photos API]
+    Auth -->|Fetch Cloud Media| iCloud[Apple CloudKit API]
+    
+    Drive -->|Normalize| Repository[Unified Media Repository]
+    Photos -->|Normalize| Repository
+    iCloud -->|Normalize| Repository
+    
+    Repository -->|Sync| PWA[Web/PWA Client]
+    Repository -->|Sync| TV[Android TV Native App]
+    
+    PWA -->|Render| Grid[Media Grid/Slideshow]
+    TV -->|Render| Leanback[Leanback UI/ExoPlayer]
+```
+
+---
+
 ## ✨ Features
 
 | Feature | Status |
@@ -89,22 +111,22 @@ memorytv/
 ### Step 2 — OAuth Credentials
 1. **APIs & Services → Credentials → Create → OAuth 2.0 Client ID**
 2. Type: **Web application**
-3. Authorized origins: \`https://YOUR_USERNAME.github.io\`
-4. Redirect URIs: \`https://YOUR_USERNAME.github.io/memorytv\`
+3. Authorized origins: `https://mnk-nasir.github.io`
+4. Redirect URIs: `https://mnk-nasir.github.io/memorytv`
 
 ### Step 3 — Add Client ID
-\`\`\`js
+```js
 // js/auth.js
 const CONFIG = {
   GOOGLE_CLIENT_ID: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
-  REDIRECT_URI: 'https://YOUR_USERNAME.github.io/memorytv',
+  REDIRECT_URI: 'https://mnk-nasir.github.io/memorytv',
 };
-\`\`\`
+```
 
 ### For Android TV
 1. Create an **Android** OAuth 2.0 Client ID
-2. Get SHA-1: \`keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android\`
-3. Download \`google-services.json\` → place in \`android-tv/app/\`
+2. Get SHA-1: `keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android`
+3. Download `google-services.json` → place in `android-tv/app/`
 
 ---
 
@@ -112,32 +134,32 @@ const CONFIG = {
 
 ### Step 1 — Apple Developer Account
 1. Enrol at [developer.apple.com](https://developer.apple.com)
-2. Register a **Services ID**: \`com.yourapp.memorytv\`
+2. Register a **Services ID**: `com.yourapp.memorytv`
 
 ### Step 2 — Sign in with Apple
 1. Enable **Sign in with Apple** on your Services ID
-2. Add domain: \`YOUR_USERNAME.github.io\`
-3. Return URL: \`https://YOUR_USERNAME.github.io/memorytv\`
+2. Add domain: `mnk-nasir.github.io`
+3. Return URL: `https://mnk-nasir.github.io/memorytv`
 
 ### Step 3 — CloudKit
 1. [icloud.developer.apple.com](https://icloud.developer.apple.com) → Create container
-2. Container ID: \`iCloud.com.yourapp.memorytv\`
+2. Container ID: `iCloud.com.yourapp.memorytv`
 3. Generate **API Token** under API Access
 
 ### Step 4 — Add credentials
-\`\`\`js
+```js
 // js/auth.js
 const CONFIG = {
   APPLE_CLIENT_ID:    'com.yourapp.memorytv',
-  APPLE_REDIRECT_URI: 'https://YOUR_USERNAME.github.io/memorytv',
+  APPLE_REDIRECT_URI: 'https://mnk-nasir.github.io/memorytv',
 };
-\`\`\`
+```
 
 ---
 
 ## 📺 Android TV Build
 
-\`\`\`bash
+```bash
 cd android-tv
 
 # Debug — install via ADB

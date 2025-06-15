@@ -25,7 +25,7 @@ const CONFIG = {
   ].join(' '),
 
   APPLE_CLIENT_ID:    'com.yourapp.memorytv',
-  APPLE_REDIRECT_URI: 'https://YOUR_USERNAME.github.io/memorytv',
+  APPLE_REDIRECT_URI: 'https://mnk-nasir.github.io/memorytv',
   APPLE_SCOPE:        'name email',
 
   REDIRECT_URI: window.location.origin + window.location.pathname,
