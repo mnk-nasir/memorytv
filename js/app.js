@@ -26,9 +26,9 @@ function buildGrid(items, id) {
   const g = document.getElementById(id);
   if (!g) return;
   g.innerHTML = items.map(m => `
-    <div class="media-card" onclick="openTVMode('${m.emoji}','${m.title}','${m.date}','${m.loc || ''}','${m.people || ''}')">
-      <div class="media-thumb" style="background:hsl(${(Math.random() * 360) | 0},20%,14%)">
-        <span style="font-size:38px;position:relative;z-index:1">${m.emoji}</span>
+    <div class="media-card" onclick="openTVMode('${m.thumb || ''}','${m.title}','${m.date}','${m.loc || ''}','${m.people || ''}','${m.url || ''}','${m.type || 'photo'}')">
+      <div class="media-thumb" style="background-image: url('${m.thumb || ''}'); background-size: cover; background-position: center;">
+        ${!m.thumb ? `<span style="font-size:38px;position:relative;z-index:1">${m.emoji}</span>` : ''}
         <div class="media-play-btn"><div class="play-circle">▶</div></div>
         <div class="media-badge ${typeClass(m.type)}">${typeLabel(m.type)}</div>
       </div>

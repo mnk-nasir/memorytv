@@ -28,8 +28,9 @@ function buildTVStrip() {
   const strip = document.getElementById('tv-strip');
   if (!strip) return;
   strip.innerHTML = TV_ITEMS.map((item, i) => `
-    <div class="tv-ch-thumb ${i === tvIdx ? 'active' : ''}" onclick="tvJump(${i})">
-      ${item.emoji}
+    <div class="tv-ch-thumb ${i === tvIdx ? 'active' : ''}" onclick="tvJump(${i})" 
+         style="background-image: url('${item.thumb || ''}'); background-size: cover; background-position: center;">
+      ${!item.thumb ? item.emoji : ''}
     </div>`).join('');
 }
 
@@ -39,7 +40,13 @@ function tvUpdate() {
   if (!item) return;
 
   const display = document.getElementById('tv-display');
-  if (display) display.innerHTML = `<span style="font-size:100px;animation:fadeIn 0.5s">${item.emoji}</span>`;
+  if (display) {
+    if (item.type === 'video') {
+      display.innerHTML = `<video src="${item.url}" autoplay muted loop style="width:100%; height:100%; object-fit: cover; animation: fadeIn 0.8s"></video>`;
+    } else {
+      display.innerHTML = `<img src="${item.url || item.thumb}" style="width:100%; height:100%; object-fit: cover; animation: fadeIn 0.8s">`;
+    }
+  }
 
   const titleEl = document.getElementById('tv-media-title');
   if (titleEl) titleEl.textContent = item.title;
@@ -109,10 +116,12 @@ function tvJump(i) {
 }
 
 // ── OPEN / CLOSE ──────────────────────────────────────────────────────
-function openTVMode(emoji, title, date, loc, people) {
-  if (emoji) {
+function openTVMode(thumb, title, date, loc, people, url, type) {
+  if (thumb) {
     TV_ITEMS[0] = {
-      emoji,
+      thumb,
+      url: url || thumb,
+      type: type || 'photo',
       title: title || '',
       sub: [loc ? '📍 ' + loc : '', people ? '👤 ' + people : '', date ? '📅 ' + date : '']
             .filter(Boolean).join(' · '),
