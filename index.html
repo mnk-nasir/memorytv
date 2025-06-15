@@ -53,21 +53,21 @@
   <div class="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-label">Connected Sources</div>
-      <div class="source-card connected" onclick="showToast('Google Drive — 2,341 items synced')">
+      <div class="source-card" onclick="showPage('connect',null)">
         <div class="source-icon" style="background:rgba(66,133,244,0.12)">📁</div>
         <div class="source-info">
           <div class="source-name">Google Drive</div>
-          <div class="source-status">2,341 items</div>
+          <div class="source-status">Not connected</div>
         </div>
-        <div class="source-badge on"></div>
+        <div class="source-badge"></div>
       </div>
-      <div class="source-card connected" onclick="showToast('Google Photos — 8,752 memories')">
+      <div class="source-card" onclick="showPage('connect',null)">
         <div class="source-icon" style="background:rgba(52,168,83,0.12)">🌄</div>
         <div class="source-info">
           <div class="source-name">Google Photos</div>
-          <div class="source-status">8,752 memories</div>
+          <div class="source-status">Not connected</div>
         </div>
-        <div class="source-badge on"></div>
+        <div class="source-badge"></div>
       </div>
       <div class="source-card" onclick="showPage('connect',null)">
         <div class="source-icon" style="background:rgba(200,200,210,0.08)">🍎</div>
@@ -310,7 +310,7 @@
         <p>Link your cloud storage and photo libraries to stream memories on any screen.</p>
         <div class="connect-grid">
 
-          <div class="connect-card connected">
+          <div class="connect-card">
             <div class="connect-card-header">
               <div class="connect-big-icon">📁</div>
               <div><div class="connect-card-name">Google Drive</div><div class="connect-card-type">Cloud Storage</div></div>
@@ -318,15 +318,15 @@
             <div class="connect-card-desc">Access photos and videos stored in your Google Drive folders and shared drives.</div>
             <ul class="connect-features">
               <li>Browse folders and albums</li><li>Stream videos directly</li>
-              <li>Shared drive support</li><li>2,341 items synced</li>
+              <li>Shared drive support</li><li>Auto-sync new files</li>
             </ul>
             <div class="connect-status">
-              <div class="status-dot"><div class="dot green"></div><span style="font-size:12px;color:var(--accent3)">Connected</span></div>
-              <button class="btn" style="font-size:11px;padding:6px 14px" onclick="showToast('Disconnected from Google Drive')">Disconnect</button>
+              <div class="status-dot"><div class="dot"></div><span style="font-size:12px;color:var(--text3)">Not connected</span></div>
+              <button class="btn btn-primary" style="font-size:11px;padding:6px 14px" onclick="import('./js/auth.js').then(m => m.googleSignIn())">Connect</button>
             </div>
           </div>
 
-          <div class="connect-card connected">
+          <div class="connect-card">
             <div class="connect-card-header">
               <div class="connect-big-icon">🌄</div>
               <div><div class="connect-card-name">Google Photos</div><div class="connect-card-type">Photo Library</div></div>
@@ -334,11 +334,11 @@
             <div class="connect-card-desc">Stream your entire Google Photos library including albums, shared libraries, and memories.</div>
             <ul class="connect-features">
               <li>Albums &amp; collections</li><li>Face grouping &amp; people</li>
-              <li>Location metadata</li><li>8,752 photos synced</li>
+              <li>Location metadata</li><li>Memories &amp; highlights</li>
             </ul>
             <div class="connect-status">
-              <div class="status-dot"><div class="dot green"></div><span style="font-size:12px;color:var(--accent3)">Connected</span></div>
-              <button class="btn" style="font-size:11px;padding:6px 14px" onclick="showToast('Disconnected from Google Photos')">Disconnect</button>
+              <div class="status-dot"><div class="dot"></div><span style="font-size:12px;color:var(--text3)">Not connected</span></div>
+              <button class="btn btn-primary" style="font-size:11px;padding:6px 14px" onclick="import('./js/auth.js').then(m => m.googleSignIn())">Connect</button>
             </div>
           </div>
 
