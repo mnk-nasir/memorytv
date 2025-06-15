@@ -9,7 +9,7 @@ const MEDIA_ITEMS = [
   { emoji: '🏖️', title: 'Bali Beach Sunset',     date: 'Jun 2025', type: 'photo', src: 'photos', loc: 'Bali',        people: 'Friends', thumb: 'assets/samples/sample-bali.png', url: 'assets/samples/sample-bali.png' },
   { emoji: '🌸', title: 'Kyoto Temple Walk',     date: 'Apr 2025', type: 'photo', src: 'photos', loc: 'Kyoto',       people: 'Friends', thumb: 'assets/samples/sample-kyoto.png', url: 'assets/samples/sample-kyoto.png' },
   { emoji: '🌲', title: 'Redwood Picnic',        date: 'Jul 2025', type: 'photo', src: 'photos', loc: 'California',  people: 'Family', thumb: 'assets/samples/sample-forest.png', url: 'assets/samples/sample-forest.png' },
-  { emoji: '🌊', title: 'Icelandic Waterfall',   date: 'May 2025', type: 'video', src: 'drive',  loc: 'Iceland',     people: 'Nature', thumb: 'assets/samples/sample-alps.png', url: 'assets/samples/sample-waterfall.mp4' },
+  { emoji: '🌊', title: 'Icelandic Waterfall',   date: 'May 2025', type: 'video', src: 'drive',  loc: 'Iceland',     people: 'Nature', thumb: 'assets/samples/sample-alps.png', url: 'https://cdn.pixabay.com/video/2024/12/15/246856_large.mp4' },
   { emoji: '🥗', title: 'Garden Breakfast',      date: 'Sep 2025', type: 'video', src: 'drive',  loc: 'Home',        people: 'Family', thumb: 'assets/samples/sample-forest.png', url: 'assets/samples/sample-garden.mp4' },
 ];
 
@@ -22,7 +22,7 @@ const ALBUM_ITEMS = [
 
 const TV_ITEMS = [
   { thumb: 'assets/samples/sample-alps.png',   url: 'assets/samples/sample-alps.png',   type: 'photo', title: 'Family hike in Swiss Alps',   sub: '📍 Switzerland · 👤 Family · 📅 Aug 2025',   tags: ['Family','Travel','Nature'] },
-  { thumb: 'assets/samples/sample-waterfall.mp4', url: 'assets/samples/sample-waterfall.mp4', type: 'video', title: 'Icelandic Waterfall',       sub: '📍 Iceland · 👤 Nature · 📅 May 2025',       tags: ['Nature','Drone','Waterfall'] },
+  { thumb: 'assets/samples/sample-alps.png',   url: 'https://cdn.pixabay.com/video/2024/12/15/246856_large.mp4', type: 'video', title: 'Icelandic Waterfall',       sub: '📍 Iceland · 👤 Nature · 📅 May 2025',       tags: ['Nature','Drone','Waterfall'] },
   { thumb: 'assets/samples/sample-bali.png',   url: 'assets/samples/sample-bali.png',   type: 'photo', title: 'Friends in Bali at Sunset',  sub: '📍 Bali · 👤 Friends · 📅 Jun 2025',         tags: ['Friends','Travel','Beach'] },
   { thumb: 'assets/samples/sample-kyoto.png',  url: 'assets/samples/sample-kyoto.png',  type: 'photo', title: 'Kyoto Cherry Blossoms',     sub: '📍 Kyoto · 👤 Friends · 📅 Apr 2025',        tags: ['Friends','Culture','Japan'] },
   { thumb: 'assets/samples/sample-garden.mp4',  url: 'assets/samples/sample-garden.mp4',  type: 'video', title: 'Garden Moments',            sub: '📍 Home · 👤 Family · 📅 Sep 2025',          tags: ['Family','Home','Lifestyle'] },
