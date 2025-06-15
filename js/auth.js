@@ -415,3 +415,11 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSourceUI('apple', true);
   }
 });
+
+// ── EXPOSE GLOBALS (for onclick in HTML) ──────────────────────────────
+// Since auth.js is a module, functions aren't global by default.
+// We expose them on window so HTML onclick attributes work.
+window.googleSignIn  = googleSignIn;
+window.googleSignOut = googleSignOut;
+window.appleSignIn   = appleSignIn;
+window.appleSignOut  = appleSignOut;
