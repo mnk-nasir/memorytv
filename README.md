@@ -215,6 +215,12 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 **APIs** — Google Drive v3, Google Photos Library v1, Apple CloudKit REST, Sign in with Apple
 
+## 📜 License
+
+Proprietary Software License — All rights reserved. Strictly no redistribution or commercial use.
+
+See the [LICENSE](LICENSE) file for the full legal terms (MemoryTV Restricted License v1.0).
+
 ---
 
-MIT License (c) 2025-2026 mnk-nasir — Made with ❤️ powered by your memories.
+Made with ❤️ by mnk-nasir — Powered by your memories.

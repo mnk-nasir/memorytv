@@ -1,0 +1,43 @@
+# MemoryTV — Proprietary Software License
+**Version 1.0 — Effective 28 March 2026**
+**Licensor:** mnk-nasir
+**Jurisdiction:** England and Wales, United Kingdom
+
+---
+
+#### 1. Definitions
+*   **"Software":** Includes all source code, binaries, documentation, assets (images/fonts), and derivative works.
+*   **"Permitted Use":** Strictly limited personal, non-commercial, read-only access.
+*   **"Commercial Use":** Any use for financial gain, revenue generation, or commercial offerings.
+*   **"Distribution":** Making the Software available to any third party.
+
+#### 2. Ownership & Intellectual Property
+The Software is the exclusive property of **mnk-nasir**. No ownership rights are transferred to the user. All rights, including copyrights and trade secrets, remain with the Licensor.
+
+#### 3. Permitted Use
+Users are only permitted to:
+*   View the source code on GitHub for personal reference and education.
+*   Clone a local copy solely for personal, non-commercial evaluation.
+*   Run the Software locally for strictly personal use.
+
+#### 4. Restrictions (What You May NOT Do)
+*   **4.1 Copying:** No duplicating substantial portions in any format.
+*   **4.2 Redistribution:** No publishing, broadcasting, or making available to third parties.
+*   **4.3 Modification:** No creating Derivative Works without express authorization.
+*   **4.4 Commercial Use:** No selling, incorporating into products, or revenue generation.
+*   **4.6 Reverse Engineering:** No decompiling or attempting to derive the source code.
+*   **4.8 Forking for Production:** No deploying forks as your own product or service.
+*   **4.9 Training AI Models:** No using the Software as training data for AI/LLMs.
+*   **4.10 Automated Scraping:** No automated tools for bulk downloading.
+
+#### 5. Not an Open-Source License
+This software is **NOT** licensed under MIT, Apache, GPL, or any open-source license. This Proprietary License supersedes any prior "MIT License" references in the repository.
+
+#### 6. Enforcement & Termination
+*   **Termination:** Automatically terminates upon any breach of terms; the user must then delete all copies.
+*   **Enforcement:** Unauthorized use may constitute copyright infringement under the **Copyright, Designs and Patents Act 1988 (UK)** and result in civil or criminal prosecution.
+*   **Liability:** The Software is provided "AS IS" with zero liability for the Licensor.
+
+---
+
+**Summary:** This is a highly restrictive proprietary license that allows only personal, non-commercial evaluation. It explicitly forbids redistribution, commercial use, modification, and use in AI training.
