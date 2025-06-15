@@ -217,4 +217,4 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 ---
 
-MIT License — Made with ❤️ powered by your memories.
+MIT License (c) 2025-2026 mnk-nasir — Made with ❤️ powered by your memories.
