@@ -176,6 +176,21 @@ export function isAppleConnected() {
   return !!TokenStore.get('apple') && !TokenStore.isExpired('apple');
 }
 
+export function googleSignOut() {
+  TokenStore.clear('google');
+  updateSourceUI('drive',  false);
+  updateSourceUI('photos', false);
+  const profileEl = document.getElementById('user-profile-bar');
+  if (profileEl) profileEl.remove();
+  showToast('Signed out of Google');
+  // Reload sample data
+  if (typeof buildGrid === 'function') {
+    buildGrid(window.MEDIA_ITEMS || [], 'media-grid-recent');
+  } else {
+    document.dispatchEvent(new CustomEvent('memorytv:signout'));
+  }
+}
+
 function loadAppleScript() {
   return new Promise((resolve, reject) => {
     if (document.getElementById('apple-js')) { resolve(); return; }
@@ -204,9 +219,42 @@ function handleOAuthRedirect() {
     window.history.replaceState({}, '', window.location.pathname);
     updateSourceUI('drive',  true);
     updateSourceUI('photos', true);
-    showToast('Google Drive & Photos connected!');
+    showToast('✅ Google connected! Loading your photos...');
+    fetchUserProfile();
     fetchGooglePhotos();
     fetchGoogleDrive();
+  }
+}
+
+// ── GOOGLE USER PROFILE ───────────────────────────────────────────────
+export async function fetchUserProfile() {
+  if (!isGoogleConnected()) return;
+  const token = getGoogleToken();
+  try {
+    const res  = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return;
+    const user = await res.json();
+    // Show user info in sidebar
+    let profileEl = document.getElementById('user-profile-bar');
+    if (!profileEl) {
+      profileEl = document.createElement('div');
+      profileEl.id = 'user-profile-bar';
+      profileEl.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(108,99,255,0.12);border-radius:10px;margin:0 0 12px;';
+      const sidebar = document.querySelector('.sidebar');
+      if (sidebar) sidebar.insertBefore(profileEl, sidebar.firstChild);
+    }
+    profileEl.innerHTML = `
+      <img src="${user.picture}" style="width:32px;height:32px;border-radius:50%;border:2px solid var(--accent)" onerror="this.style.display='none'">
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--text1)">${user.name || user.email}</div>
+        <div style="font-size:11px;color:var(--text3)">Google connected</div>
+      </div>
+      <button onclick="import('./js/auth.js').then(m=>m.googleSignOut())" style="margin-left:auto;font-size:10px;padding:4px 8px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer">Sign out</button>
+    `;
+  } catch (e) {
+    console.warn('[Profile]', e);
   }
 }
 
@@ -341,10 +389,14 @@ function updateSourceUI(sourceId, connected) {
 }
 
 function updateMediaGrid(items, source) {
-  // Merge real items into the grid — called after API fetch
-  if (typeof buildGrid === 'function' && items.length > 0) {
-    buildGrid(items, 'media-grid-recent');
+  if (!items || items.length === 0) {
+    showToast(`⚠️ No ${source} items found. Check API permissions.`);
+    return;
   }
+  // Since auth.js is a module, dispatch an event to app.js global scope
+  const event = new CustomEvent('memorytv:media-loaded', { detail: { items, source } });
+  document.dispatchEvent(event);
+  showToast(`✅ Loaded ${items.length} items from ${source}!`);
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
@@ -355,6 +407,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (isGoogleConnected()) {
     updateSourceUI('drive',  true);
     updateSourceUI('photos', true);
+    fetchUserProfile();
+    fetchGooglePhotos();
+    fetchGoogleDrive();
   }
   if (isAppleConnected()) {
     updateSourceUI('apple', true);

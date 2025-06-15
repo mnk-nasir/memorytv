@@ -92,4 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
   buildTVStrip();
   updateTVClock();
   setInterval(updateTVClock, 30000);
+
+  // Listen for real media loaded from Google Photos/Drive
+  document.addEventListener('memorytv:media-loaded', (e) => {
+    const { items, source } = e.detail;
+    if (items && items.length > 0) {
+      buildGrid(items, 'media-grid-recent');
+    }
+  });
 });
