@@ -16,7 +16,7 @@
 
 // ── CONFIG ────────────────────────────────────────────────────────────
 const CONFIG = {
-  GOOGLE_CLIENT_ID:   'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+  GOOGLE_CLIENT_ID:   '791890361828-6fcmcvq9gnvuo8j6da5s1vfou3p7ikio.apps.googleusercontent.com',
   GOOGLE_SCOPES: [
     'https://www.googleapis.com/auth/drive.readonly',
     'https://www.googleapis.com/auth/photoslibrary.readonly',

@@ -6,7 +6,7 @@
  * https://console.cloud.google.com/apis/credentials
  */
 
-const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID_HERE.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '791890361828-6fcmcvq9gnvuo8j6da5s1vfou3p7ikio.apps.googleusercontent.com';
 const APPLE_CLIENT_ID  = 'com.yourapp.memorytv';
 const APPLE_REDIRECT_URI = 'https://mnk-nasir.github.io/memorytv/callback';
 
