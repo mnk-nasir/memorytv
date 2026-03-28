@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base TV theme -->
+    <style name="Theme.MemoryTV" parent="Theme.Leanback">
+        <item name="android:colorPrimary">#6C63FF</item>
+        <item name="android:colorPrimaryDark">#4A42DD</item>
+        <item name="android:colorAccent">#FF6584</item>
+        <item name="android:colorBackground">#0A0A0F</item>
+        <item name="android:windowBackground">#0A0A0F</item>
+        <item name="android:textColorPrimary">#F0F0FF</item>
+        <item name="android:textColorSecondary">#99F0F0FF</item>
+        <item name="android:fontFamily">@font/dm_sans</item>
+    </style>
+
+    <!-- Immersive full-screen for TV player -->
+    <style name="Theme.MemoryTV.Immersive" parent="Theme.MemoryTV">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>

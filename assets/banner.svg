@@ -1,0 +1,19 @@
+<svg width="900" height="200" viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0f"/>
+      <stop offset="100%" style="stop-color:#12121a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="0%" r="70%">
+      <stop offset="0%" style="stop-color:#6c63ff;stop-opacity:0.25"/>
+      <stop offset="100%" style="stop-color:#6c63ff;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="200" rx="16" fill="url(#bg)"/>
+  <rect width="900" height="200" rx="16" fill="url(#glow)"/>
+  <circle cx="28" cy="40" r="7" fill="#ff6584" opacity="0.9"/>
+  <text x="46" y="47" font-family="Georgia, serif" font-size="22" font-weight="400" fill="#f0f0ff" letter-spacing="-0.5">MemoryTV</text>
+  <text x="44" y="108" font-family="Georgia, serif" font-size="38" font-weight="400" fill="#f0f0ff" letter-spacing="-1">Your Personal Channel</text>
+  <text x="44" y="142" font-family="Arial, sans-serif" font-size="15" fill="rgba(240,240,255,0.5)">Google Drive · Google Photos · Apple iCloud · Android TV</text>
+  <text x="826" y="108" font-family="Arial" font-size="52" text-anchor="middle">📺</text>
+</svg>

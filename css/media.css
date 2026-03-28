@@ -1,0 +1,61 @@
+/* media.css — Media grid and cards */
+
+.media-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 16px; padding: 0 40px 40px;
+}
+.media-card {
+  border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; position: relative;
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s, box-shadow 0.2s;
+}
+.media-card:hover {
+  transform: scale(1.04) translateY(-4px);
+  border-color: var(--border2); box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+}
+.media-thumb {
+  width: 100%; aspect-ratio: 16/10; background: var(--surface3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; position: relative; overflow: hidden;
+}
+.media-thumb::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+}
+.media-play-btn {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.2s;
+}
+.media-card:hover .media-play-btn { opacity: 1; }
+.play-circle {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--bg);
+}
+.media-badge {
+  position: absolute; top: 8px; right: 8px; z-index: 3;
+  padding: 3px 8px; border-radius: 100px;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.badge-photo { background: rgba(255,101,132,0.85); color: #fff; }
+.badge-video { background: rgba(108,99,255,0.85); color: #fff; }
+.badge-album { background: rgba(67,233,123,0.85); color: #0a0a0f; }
+
+.media-info { padding: 12px 14px 14px; }
+.media-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.media-meta { font-size: 11px; color: var(--text3); display: flex; gap: 8px; align-items: center; }
+.media-source { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.src-drive  { background: #4285F4; }
+.src-photos { background: #34A853; }
+.src-apple  { background: #aaa; }
+.src-local  { background: var(--accent2); }
+
+@media (max-width: 900px) {
+  .media-grid { grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); padding: 0 20px 32px; }
+}
+@media (min-width: 1600px) {
+  .media-grid { grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); }
+}

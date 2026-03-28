@@ -1,0 +1,62 @@
+/* sidebar.css — Sidebar, source cards, filters, playlists */
+
+.sidebar {
+  padding: 24px 16px; border-right: 1px solid var(--border);
+  background: var(--surface); overflow-y: auto;
+}
+.sidebar-section { margin-bottom: 28px; }
+.sidebar-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text3); padding: 0 8px; margin-bottom: 8px;
+}
+
+/* SOURCE CARDS */
+.source-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--surface2);
+  margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
+}
+.source-card:hover { border-color: var(--border2); background: var(--surface3); }
+.source-card.connected { border-color: rgba(67,233,123,0.3); }
+.source-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.source-info { flex: 1; min-width: 0; }
+.source-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.source-status { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.source-badge { width: 8px; height: 8px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
+.source-badge.on { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+
+/* FILTER CHIPS */
+.filter-group { margin-bottom: 16px; }
+.filter-title { font-size: 12px; color: var(--text2); margin-bottom: 8px; padding: 0 4px; }
+.filter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  padding: 5px 12px; border-radius: 100px;
+  font-size: 11px; font-weight: 500; border: 1px solid var(--border2);
+  color: var(--text2); cursor: pointer; transition: all 0.2s; background: transparent;
+}
+.chip:hover { color: var(--text); border-color: var(--accent); }
+.chip.active { background: rgba(108,99,255,0.2); border-color: var(--accent); color: var(--accent); }
+
+/* PLAYLISTS */
+.playlist-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius);
+  cursor: pointer; transition: background 0.2s;
+}
+.playlist-item:hover { background: var(--surface2); }
+.playlist-item.active { background: rgba(108,99,255,0.15); }
+.playlist-thumb {
+  width: 42px; height: 30px; border-radius: 6px;
+  background: var(--surface3); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.playlist-meta { flex: 1; min-width: 0; }
+.playlist-name { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.playlist-count { font-size: 10px; color: var(--text3); margin-top: 1px; }
+
+@media (max-width: 900px) { .sidebar { display: none; } }

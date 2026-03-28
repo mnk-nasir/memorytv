@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MemoryTV — Your Personal Channel</title>
+<meta name="description" content="Stream your photos and videos from Google Drive, Google Photos, Apple iCloud and local storage — organized by people, events and places.">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6c63ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MemoryTV">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+
+<!-- Apple Sign In JS -->
+<script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+<!-- Styles -->
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/media.css">
+<link rel="stylesheet" href="css/tv-mode.css">
+<link rel="stylesheet" href="css/connect.css">
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-dot"></div>
+    MemoryTV
+  </div>
+  <div class="nav-pills">
+    <div class="nav-pill active" onclick="showPage('home',this)">Home</div>
+    <div class="nav-pill" onclick="showPage('channels',this)">Channels</div>
+    <div class="nav-pill" onclick="showPage('connect',this)">Sources</div>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn" onclick="openTVMode()">▶ TV Mode</button>
+    <button class="btn btn-primary" onclick="showToast('Channel builder opened!')">+ New Channel</button>
+  </div>
+</div>
+
+<!-- ── MAIN LAYOUT ── -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Connected Sources</div>
+      <div class="source-card connected" onclick="showToast('Google Drive — 2,341 items synced')">
+        <div class="source-icon" style="background:rgba(66,133,244,0.12)">📁</div>
+        <div class="source-info">
+          <div class="source-name">Google Drive</div>
+          <div class="source-status">2,341 items</div>
+        </div>
+        <div class="source-badge on"></div>
+      </div>
+      <div class="source-card connected" onclick="showToast('Google Photos — 8,752 memories')">
+        <div class="source-icon" style="background:rgba(52,168,83,0.12)">🌄</div>
+        <div class="source-info">
+          <div class="source-name">Google Photos</div>
+          <div class="source-status">8,752 memories</div>
+        </div>
+        <div class="source-badge on"></div>
+      </div>
+      <div class="source-card" onclick="showPage('connect',null)">
+        <div class="source-icon" style="background:rgba(200,200,210,0.08)">🍎</div>
+        <div class="source-info">
+          <div class="source-name">Apple iCloud</div>
+          <div class="source-status">Not connected</div>
+        </div>
+        <div class="source-badge"></div>
+      </div>
+      <div class="source-card" onclick="showPage('connect',null)">
+        <div class="source-icon" style="background:rgba(255,101,132,0.1)">💾</div>
+        <div class="source-info">
+          <div class="source-name">Local Storage</div>
+          <div class="source-status">Not connected</div>
+        </div>
+        <div class="source-badge"></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Filter By</div>
+      <div class="filter-group">
+        <div class="filter-title">People</div>
+        <div class="filter-chips">
+          <div class="chip active" onclick="toggleChip(this)">All</div>
+          <div class="chip" onclick="toggleChip(this)">Sarah</div>
+          <div class="chip" onclick="toggleChip(this)">James</div>
+          <div class="chip" onclick="toggleChip(this)">Mum</div>
+          <div class="chip" onclick="toggleChip(this)">Dad</div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-title">Events</div>
+        <div class="filter-chips">
+          <div class="chip active" onclick="toggleChip(this)">All</div>
+          <div class="chip" onclick="toggleChip(this)">Birthday</div>
+          <div class="chip" onclick="toggleChip(this)">Holiday</div>
+          <div class="chip" onclick="toggleChip(this)">Wedding</div>
+          <div class="chip" onclick="toggleChip(this)">School</div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-title">Location</div>
+        <div class="filter-chips">
+          <div class="chip active" onclick="toggleChip(this)">All</div>
+          <div class="chip" onclick="toggleChip(this)">London</div>
+          <div class="chip" onclick="toggleChip(this)">Paris</div>
+          <div class="chip" onclick="toggleChip(this)">Maldives</div>
+          <div class="chip" onclick="toggleChip(this)">Home</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">My Playlists</div>
+      <div class="playlist-item active">
+        <div class="playlist-thumb">🌅</div>
+        <div class="playlist-meta">
+          <div class="playlist-name">Summer 2024</div>
+          <div class="playlist-count">142 items</div>
+        </div>
+      </div>
+      <div class="playlist-item">
+        <div class="playlist-thumb">🎂</div>
+        <div class="playlist-meta">
+          <div class="playlist-name">Birthdays</div>
+          <div class="playlist-count">87 items</div>
+        </div>
+      </div>
+      <div class="playlist-item">
+        <div class="playlist-thumb">✈️</div>
+        <div class="playlist-meta">
+          <div class="playlist-name">Travel Memories</div>
+          <div class="playlist-count">312 items</div>
+        </div>
+      </div>
+      <div class="playlist-item">
+        <div class="playlist-thumb">👨‍👩‍👧‍👦</div>
+        <div class="playlist-meta">
+          <div class="playlist-name">Family Moments</div>
+          <div class="playlist-count">219 items</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN CONTENT ── -->
+  <div class="main">
+
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page active">
+      <div class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+          <div class="hero-tag">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--accent2);display:inline-block"></span>
+            Live · 11,093 memories
+          </div>
+          <h1>Your life, on every screen.</h1>
+          <p>Stream your photos and videos from Google Drive, Google Photos, Apple iCloud and local storage — organized by people, events and places.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" onclick="openTVMode()">▶ Play All</button>
+            <button class="btn" onclick="showPage('channels',document.querySelectorAll('.nav-pill')[1])">Browse Channels</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon">🖼️</div><div class="stat-value">8,241</div><div class="stat-label">Photos</div></div>
+        <div class="stat-card"><div class="stat-icon">🎬</div><div class="stat-value">2,852</div><div class="stat-label">Videos</div></div>
+        <div class="stat-card"><div class="stat-icon">📍</div><div class="stat-value">48</div><div class="stat-label">Locations</div></div>
+        <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-value">24</div><div class="stat-label">People</div></div>
+      </div>
+
+      <div class="section-header">
+        <h2>Recent Memories</h2>
+        <span class="see-all">See all →</span>
+      </div>
+      <div class="media-grid" id="media-grid-recent"></div>
+
+      <div class="section-header">
+        <h2>Albums &amp; Events</h2>
+        <span class="see-all">See all →</span>
+      </div>
+      <div class="media-grid" id="media-grid-albums"></div>
+    </div>
+
+    <!-- CHANNELS PAGE -->
+    <div id="page-channels" class="page">
+      <div class="channels-page">
+        <h2>Channel Builder</h2>
+        <div class="channel-builder">
+          <div>
+            <div class="channel-form-section" style="margin-bottom:20px">
+              <h3>Channel Settings</h3>
+              <div class="form-group">
+                <label class="form-label">Channel Name</label>
+                <input class="form-input" type="text" placeholder="e.g. Summer Holidays" id="ch-name" oninput="updatePreview()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Source</label>
+                <select class="form-select">
+                  <option>All Sources</option>
+                  <option>Google Drive</option>
+                  <option>Google Photos</option>
+                  <option>Apple iCloud</option>
+                  <option>Local Storage</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Content Type</label>
+                <select class="form-select">
+                  <option>Photos &amp; Videos</option>
+                  <option>Photos Only</option>
+                  <option>Videos Only</option>
+                </select>
+              </div>
+            </div>
+            <div class="channel-form-section" style="margin-bottom:20px">
+              <h3>Personalization</h3>
+              <div class="form-group">
+                <label class="form-label">Filter by Person</label>
+                <input class="form-input" type="text" placeholder="e.g. Sarah, James ...">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Filter by Location</label>
+                <input class="form-input" type="text" placeholder="e.g. London, Paris ...">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Filter by Event / Album</label>
+                <input class="form-input" type="text" placeholder="e.g. Birthday, Wedding ...">
+              </div>
+            </div>
+            <div class="channel-form-section">
+              <h3>Playback Settings</h3>
+              <div class="form-group">
+                <label class="form-label">Slide Duration (seconds)</label>
+                <div class="range-row">
+                  <input type="range" min="2" max="30" value="8" id="slide-dur" oninput="document.getElementById('slide-dur-val').textContent=this.value;updatePreview()">
+                  <span class="range-val" id="slide-dur-val">8</span>
+                </div>
+              </div>
+              <div class="toggle-row">
+                <div><div class="toggle-info">Shuffle Mode</div><div class="toggle-hint">Randomize playback order</div></div>
+                <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+              </div>
+              <div class="toggle-row">
+                <div><div class="toggle-info">Show Captions</div><div class="toggle-hint">Display date, location &amp; people tags</div></div>
+                <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+              </div>
+              <div class="toggle-row">
+                <div><div class="toggle-info">Face Recognition</div><div class="toggle-hint">Auto-tag people in photos</div></div>
+                <button class="toggle" onclick="this.classList.toggle('on')"></button>
+              </div>
+              <div class="toggle-row">
+                <div><div class="toggle-info">Auto-play on TV Start</div><div class="toggle-hint">Launch channel when TV app opens</div></div>
+                <button class="toggle" onclick="this.classList.toggle('on')"></button>
+              </div>
+              <div style="margin-top:24px;display:flex;gap:12px">
+                <button class="btn btn-primary" style="flex:1" onclick="saveChannel()">Save Channel</button>
+                <button class="btn" onclick="openTVMode()">▶ Preview</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PREVIEW PANEL -->
+          <div>
+            <div class="channel-preview">
+              <div class="channel-preview-screen">
+                <div style="font-size:48px;position:relative;z-index:2">🌅</div>
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%)"></div>
+                <div style="position:absolute;bottom:14px;left:16px;z-index:3">
+                  <div style="font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,0.5)">CHANNEL PREVIEW</div>
+                  <div style="font-family:var(--font-display);font-size:18px;color:#fff" id="preview-title">My Channel</div>
+                </div>
+              </div>
+              <div class="channel-preview-info">
+                <div class="channel-name-preview" id="preview-name">My Channel</div>
+                <div class="channel-stats-preview">
+                  <span>All Sources</span><span>·</span>
+                  <span id="preview-dur">8s per slide</span><span>·</span>
+                  <span>Shuffle On</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;padding:20px;border-radius:var(--radius-lg);border:1px solid var(--border);background:var(--surface)">
+              <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:14px">My Channels</div>
+              <div id="saved-channels-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECT / SOURCES PAGE -->
+    <div id="page-connect" class="page">
+      <div class="connect-page">
+        <h2>Connect Your Sources</h2>
+        <p>Link your cloud storage and photo libraries to stream memories on any screen.</p>
+        <div class="connect-grid">
+
+          <div class="connect-card connected">
+            <div class="connect-card-header">
+              <div class="connect-big-icon">📁</div>
+              <div><div class="connect-card-name">Google Drive</div><div class="connect-card-type">Cloud Storage</div></div>
+            </div>
+            <div class="connect-card-desc">Access photos and videos stored in your Google Drive folders and shared drives.</div>
+            <ul class="connect-features">
+              <li>Browse folders and albums</li><li>Stream videos directly</li>
+              <li>Shared drive support</li><li>2,341 items synced</li>
+            </ul>
+            <div class="connect-status">
+              <div class="status-dot"><div class="dot green"></div><span style="font-size:12px;color:var(--accent3)">Connected</span></div>
+              <button class="btn" style="font-size:11px;padding:6px 14px" onclick="showToast('Disconnected from Google Drive')">Disconnect</button>
+            </div>
+          </div>
+
+          <div class="connect-card connected">
+            <div class="connect-card-header">
+              <div class="connect-big-icon">🌄</div>
+              <div><div class="connect-card-name">Google Photos</div><div class="connect-card-type">Photo Library</div></div>
+            </div>
+            <div class="connect-card-desc">Stream your entire Google Photos library including albums, shared libraries, and memories.</div>
+            <ul class="connect-features">
+              <li>Albums &amp; collections</li><li>Face grouping &amp; people</li>
+              <li>Location metadata</li><li>8,752 photos synced</li>
+            </ul>
+            <div class="connect-status">
+              <div class="status-dot"><div class="dot green"></div><span style="font-size:12px;color:var(--accent3)">Connected</span></div>
+              <button class="btn" style="font-size:11px;padding:6px 14px" onclick="showToast('Disconnected from Google Photos')">Disconnect</button>
+            </div>
+          </div>
+
+          <div class="connect-card">
+            <div class="connect-card-header">
+              <div class="connect-big-icon">🍎</div>
+              <div><div class="connect-card-name">Apple iCloud</div><div class="connect-card-type">iCloud Photos</div></div>
+            </div>
+            <div class="connect-card-desc">Access your Apple Photos library, shared albums and iCloud Drive media files.</div>
+            <ul class="connect-features">
+              <li>iCloud Photo Library</li><li>Shared albums</li>
+              <li>Live Photos support</li><li>Memories &amp; highlights</li>
+            </ul>
+            <div class="connect-status">
+              <div class="status-dot"><div class="dot"></div><span style="font-size:12px;color:var(--text3)">Not connected</span></div>
+              <button class="btn btn-primary" style="font-size:11px;padding:6px 14px" onclick="showToast('Opening Apple Sign In…')">Connect</button>
+            </div>
+          </div>
+
+          <div class="connect-card">
+            <div class="connect-card-header">
+              <div class="connect-big-icon">💾</div>
+              <div><div class="connect-card-name">Local Storage</div><div class="connect-card-type">Device / USB</div></div>
+            </div>
+            <div class="connect-card-desc">Import photos and videos from your Android TV's local storage, USB drives, or SD cards.</div>
+            <ul class="connect-features">
+              <li>USB &amp; SD card support</li><li>Internal storage scan</li>
+              <li>Auto-import new files</li><li>Offline playback</li>
+            </ul>
+            <div class="connect-status">
+              <div class="status-dot"><div class="dot"></div><span style="font-size:12px;color:var(--text3)">Not connected</span></div>
+              <button class="btn btn-primary" style="font-size:11px;padding:6px 14px" onclick="showToast('Scanning device storage…')">Scan Device</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:36px;padding:24px;border-radius:var(--radius-lg);border:1px solid var(--border);background:var(--surface)">
+          <div style="font-size:15px;font-weight:500;margin-bottom:8px">Android TV App</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px">
+            MemoryTV is available as a native Android TV app. Install it from the Google Play Store on your TV for the best experience with D-pad navigation, remote control support, and 4K HDR playback.
+          </div>
+          <button class="btn" onclick="showToast('Download APK — sign up for early access!')">Download Android TV APK</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ── TV MODE OVERLAY ── -->
+<div class="tv-mode-overlay" id="tv-mode">
+  <div class="tv-screen">
+    <div class="tv-media-display" id="tv-display">🌅</div>
+    <div class="tv-overlay-gradient"></div>
+    <div class="tv-time" id="tv-clock">20:42</div>
+    <button class="tv-exit" onclick="closeTVMode()">✕ Exit TV Mode</button>
+    <div class="tv-channel-info">
+      <div class="tv-channel-tag">▶ MEMORYTV · CH 1</div>
+      <div class="tv-title" id="tv-media-title">Summer Holiday, Maldives</div>
+      <div class="tv-subtitle" id="tv-media-sub">📍 Maldives · 👤 Sarah, James · 📅 August 2024</div>
+      <div class="tv-tags" id="tv-tags">
+        <span class="tv-tag">Holiday</span>
+        <span class="tv-tag">Beach</span>
+        <span class="tv-tag">Family</span>
+        <span class="tv-tag">Google Photos</span>
+      </div>
+    </div>
+    <div class="tv-progress-bar">
+      <div class="tv-progress-fill" id="tv-progress" style="width:0%"></div>
+    </div>
+    <div class="tv-controls">
+      <div class="tv-ctrl-group">
+        <div class="tv-btn" onclick="tvPrev()">⏮</div>
+        <div class="tv-btn large" id="tv-play-btn" onclick="tvTogglePlay()">⏸</div>
+        <div class="tv-btn" onclick="tvNext()">⏭</div>
+      </div>
+      <div class="tv-channel-strip" id="tv-strip"></div>
+      <div class="tv-ctrl-group">
+        <div class="tv-btn" onclick="showToast('Shuffle on')">🔀</div>
+        <div class="tv-btn" onclick="showToast('Looping channel')">🔁</div>
+        <div class="tv-btn" onclick="showToast('Info panel')">ℹ</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- Scripts — order matters: data first, then modules, then app -->
+<script src="js/data.js"></script>
+<script src="js/tv.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/channels.js"></script>
+<script src="js/app.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script>
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.connect-card').forEach(card => {
+      const name = card.querySelector('.connect-card-name')?.textContent || '';
+      const btn  = card.querySelector('.btn-primary');
+      if (!btn) return;
+      if (name.includes('Google')) btn.onclick = () => import('./js/auth.js').then(m => m.googleSignIn());
+      if (name.includes('Apple'))  btn.onclick = () => import('./js/auth.js').then(m => m.appleSignIn());
+    });
+    const installBtn = document.getElementById('pwa-install-btn');
+    if (installBtn) installBtn.onclick = () => import('./js/auth.js').then(m => m.installPWA());
+  });
+</script>
+
+</body>
+</html>

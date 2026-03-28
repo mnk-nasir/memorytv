@@ -1,0 +1,45 @@
+{
+  "name": "memorytv",
+  "version": "1.0.0",
+  "description": "Your personal TV channel — stream photos & videos from Google Drive, Google Photos, Apple iCloud and local storage, organized by people, events and places.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . --listen 8080",
+    "dev": "npx live-server --port=8080 --open=index.html",
+    "lint": "npx eslint js/**/*.js",
+    "format": "npx prettier --write ."
+  },
+  "keywords": [
+    "tv",
+    "photos",
+    "slideshow",
+    "google-photos",
+    "google-drive",
+    "icloud",
+    "android-tv",
+    "memory-channel",
+    "media-player"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/memorytv.git"
+  },
+  "homepage": "https://YOUR_USERNAME.github.io/memorytv",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "live-server": "^1.2.2",
+    "prettier": "^3.0.0",
+    "serve": "^14.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "Android TV Chrome"
+  ]
+}
