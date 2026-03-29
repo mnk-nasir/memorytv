@@ -319,6 +319,77 @@ export async function fetchGoogleDrive() {
   return items;
 }
 
+// ── LOCAL STORAGE SCANNER ─────────────────────────────────────────────
+export async function scanLocalStorage() {
+  // Use File System Access API if available (Chrome/Edge)
+  if ('showDirectoryPicker' in window) {
+    try {
+      const dirHandle = await window.showDirectoryPicker();
+      showToast('Scanning folder…');
+      const items = await scanDirectory(dirHandle);
+      if (items.length > 0) {
+        updateSourceUI('local', true);
+        updateMediaGrid(items, 'local');
+      } else {
+        showToast('No photos or videos found in that folder.');
+      }
+      return items;
+    } catch (err) {
+      if (err.name !== 'AbortError') showToast('Could not access folder.');
+      return [];
+    }
+  }
+  // Fallback: standard file picker
+  return new Promise(resolve => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = 'image/*,video/*';
+    input.onchange = () => {
+      const items = Array.from(input.files).map(f => normalizeLocalFile(f));
+      if (items.length > 0) {
+        updateSourceUI('local', true);
+        updateMediaGrid(items, 'local');
+      }
+      resolve(items);
+    };
+    input.click();
+  });
+}
+
+async function scanDirectory(dirHandle, folder = '') {
+  const items = [];
+  for await (const [name, handle] of dirHandle.entries()) {
+    if (handle.kind === 'file') {
+      const file = await handle.getFile();
+      if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+        items.push(normalizeLocalFile(file, folder || dirHandle.name));
+      }
+    } else if (handle.kind === 'directory' && !name.startsWith('.')) {
+      // One level of subfolders
+      const sub = await scanDirectory(handle, name);
+      items.push(...sub);
+    }
+  }
+  return items;
+}
+
+function normalizeLocalFile(file, folder = '') {
+  const url = URL.createObjectURL(file);
+  const isVideo = file.type.startsWith('video/');
+  return {
+    id:     `local_${file.name}_${file.lastModified}`,
+    title:  file.name,
+    thumb:  isVideo ? '' : url,
+    url,
+    date:   new Date(file.lastModified).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }),
+    type:   isVideo ? 'video' : 'photo',
+    source: 'local',
+    loc:    folder,
+    people: '',
+  };
+}
+
 // ── APPLE CLOUDKIT API ────────────────────────────────────────────────
 export async function fetchApplePhotos() {
   const tokens = TokenStore.get('apple');
@@ -435,3 +506,4 @@ window.googleSignOut     = googleSignOut;
 window.appleSignIn       = appleSignIn;
 window.appleSignOut      = appleSignOut;
 window.fetchAlbumPhotos  = fetchAlbumPhotos;
+window.scanLocalStorage  = scanLocalStorage;
