@@ -19,7 +19,6 @@ const CONFIG = {
   GOOGLE_CLIENT_ID:   '791890361828-6fcmcvq9gnvuo8j6da5s1vfou3p7ikio.apps.googleusercontent.com',
   GOOGLE_SCOPES: [
     'https://www.googleapis.com/auth/drive.readonly',
-    'https://www.googleapis.com/auth/photoslibrary.readonly',
     'profile',
     'email',
   ].join(' '),
@@ -208,7 +207,6 @@ function handleOAuthRedirect() {
     updateSourceUI('photos', true);
     showToast('✅ Google connected! Loading your photos...');
     fetchUserProfile();
-    fetchGooglePhotos();
     fetchGoogleDrive();
     fetchGoogleAlbums();
   }
@@ -246,24 +244,12 @@ export async function fetchUserProfile() {
   }
 }
 
-// ── GOOGLE PHOTOS API ─────────────────────────────────────────────────
-export async function fetchGooglePhotos(pageToken = null) {
-  if (!isGoogleConnected()) return [];
-  const token = getGoogleToken();
-  const body  = { pageSize: 100, ...(pageToken && { pageToken }) };
-
-  const res = await fetch('https://photoslibrary.googleapis.com/v1/mediaItems:search', {
-    method:  'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body:    JSON.stringify(body),
-  });
-
-  if (!res.ok) { console.error('[Photos API]', await res.text()); return []; }
-
-  const data = await res.json();
-  const items = (data.mediaItems || []).map(normalizeGooglePhoto);
-  updateMediaGrid(items, 'photos');
-  return items;
+// ── GOOGLE PHOTOS API (via Drive) ────────────────────────────────────
+// Note: Google Photos Library API requires verified app status.
+// We use Drive API instead, which works with drive.readonly scope.
+export async function fetchGooglePhotos() {
+  // Photos are loaded via fetchGoogleDrive — this is a no-op to avoid duplicate calls
+  return [];
 }
 
 export async function fetchGoogleAlbums() {
@@ -273,23 +259,23 @@ export async function fetchGoogleAlbums() {
   let pageToken = null;
 
   do {
-    const url = `https://photoslibrary.googleapis.com/v1/albums?pageSize=50${pageToken ? '&pageToken=' + pageToken : ''}`;
+    const query = encodeURIComponent("mimeType = 'application/vnd.google-apps.folder' and trashed = false");
+    const url = `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name,thumbnailLink,modifiedTime)&pageSize=50&orderBy=modifiedTime%20desc${pageToken ? '&pageToken=' + pageToken : ''}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     if (!res.ok) break;
     const data = await res.json();
-    const page = (data.albums || []).map(a => ({
-      id:     a.id,
-      title:  a.title,
-      count:  parseInt(a.mediaItemsCount || 0),
-      cover:  a.coverPhotoBaseUrl ? a.coverPhotoBaseUrl + '=w400-h240-c' : '',
-      source: 'photos',
+    const page = (data.files || []).map(f => ({
+      id:     f.id,
+      title:  f.name,
+      count:  0,
+      cover:  f.thumbnailLink || '',
+      source: 'drive',
       type:   'album',
     }));
     albums = albums.concat(page);
     pageToken = data.nextPageToken || null;
   } while (pageToken);
 
-  // Store lookup for fetchAlbumPhotos
   window._gAlbums = Object.fromEntries(albums.map(a => [a.id, a]));
   document.dispatchEvent(new CustomEvent('memorytv:albums-loaded', { detail: { albums } }));
   return albums;
@@ -298,22 +284,19 @@ export async function fetchGoogleAlbums() {
 export async function fetchAlbumPhotos(albumId) {
   if (!isGoogleConnected()) return [];
   const token = getGoogleToken();
-  const albumTitle = window._gAlbums?.[albumId]?.title || 'Album';
+  const albumTitle = window._gAlbums?.[albumId]?.title || 'Folder';
   showToast(`Loading "${albumTitle}"…`);
 
   let items = [];
   let pageToken = null;
 
   do {
-    const body = { albumId, pageSize: 100, ...(pageToken && { pageToken }) };
-    const res = await fetch('https://photoslibrary.googleapis.com/v1/mediaItems:search', {
-      method:  'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body:    JSON.stringify(body),
-    });
+    const query = encodeURIComponent(`'${albumId}' in parents and (mimeType contains 'image/' or mimeType contains 'video/') and trashed = false`);
+    const url = `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name,mimeType,thumbnailLink,createdTime,imageMediaMetadata)&pageSize=100${pageToken ? '&pageToken=' + pageToken : ''}`;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     if (!res.ok) { console.error('[Album Photos]', await res.text()); break; }
     const data = await res.json();
-    items = items.concat((data.mediaItems || []).map(normalizeGooglePhoto));
+    items = items.concat((data.files || []).map(normalizeGoogleDriveFile));
     pageToken = data.nextPageToken || null;
   } while (pageToken);
 
@@ -374,7 +357,7 @@ function normalizeGoogleDriveFile(file) {
     date:   file.createdTime ? new Date(file.createdTime).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }) : '',
     type:   isVideo ? 'video' : 'photo',
     source: 'drive',
-    loc:    file.imageMediaMetadata?.location || '',
+    loc:    '',
     people: '',
   };
 }
@@ -436,7 +419,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSourceUI('drive',  true);
     updateSourceUI('photos', true);
     fetchUserProfile();
-    fetchGooglePhotos();
     fetchGoogleDrive();
     fetchGoogleAlbums();
   }
