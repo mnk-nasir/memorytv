@@ -43,6 +43,27 @@ function buildGrid(items, id) {
     </div>`).join('');
 }
 
+// ── ALBUM GRID BUILDER ────────────────────────────────────────────────
+function buildAlbumGrid(albums, id) {
+  const g = document.getElementById(id);
+  if (!g) return;
+  g.innerHTML = albums.map(a => `
+    <div class="media-card" onclick="fetchAlbumPhotos('${a.id}')">
+      <div class="media-thumb" style="background-image: url('${a.cover}'); background-size: cover; background-position: center;">
+        ${!a.cover ? `<span style="font-size:38px;position:relative;z-index:1">🖼️</span>` : ''}
+        <div class="media-play-btn"><div class="play-circle">▶</div></div>
+        <div class="media-badge badge-album">Album</div>
+      </div>
+      <div class="media-info">
+        <div class="media-title">${a.title}</div>
+        <div class="media-meta">
+          <span class="media-source src-photos"></span>
+          <span>${a.count} items</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
 // ── PAGE ROUTING ──────────────────────────────────────────────────────
 function showPage(id, pill) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -98,6 +119,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const { items, source } = e.detail;
     if (items && items.length > 0) {
       buildGrid(items, 'media-grid-recent');
+    }
+  });
+
+  // Listen for albums loaded from Google Photos
+  document.addEventListener('memorytv:albums-loaded', (e) => {
+    const { albums } = e.detail;
+    if (albums && albums.length > 0) {
+      buildAlbumGrid(albums, 'media-grid-albums');
     }
   });
 });
