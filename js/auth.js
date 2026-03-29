@@ -78,9 +78,6 @@ export async function registerPWA() {
       if (e.data.type === 'SYNC_COMPLETE') showToast('Media library synced!');
     });
 
-    // Handle URL params from OAuth redirects
-    handleOAuthRedirect();
-
     // Handle PWA install prompt
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
@@ -118,16 +115,6 @@ export function googleSignIn() {
   window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
 }
 
-export function googleSignOut() {
-  const tokens = TokenStore.get('google');
-  if (tokens?.access_token) {
-    fetch(`https://oauth2.googleapis.com/revoke?token=${tokens.access_token}`, { method: 'POST' });
-  }
-  TokenStore.remove('google');
-  updateSourceUI('drive',  false);
-  updateSourceUI('photos', false);
-  showToast('Signed out of Google');
-}
 
 export function isGoogleConnected() {
   return !!TokenStore.get('google') && !TokenStore.isExpired('google');
@@ -177,7 +164,7 @@ export function isAppleConnected() {
 }
 
 export function googleSignOut() {
-  TokenStore.clear('google');
+  TokenStore.remove('google');
   updateSourceUI('drive',  false);
   updateSourceUI('photos', false);
   const profileEl = document.getElementById('user-profile-bar');
@@ -251,7 +238,7 @@ export async function fetchUserProfile() {
         <div style="font-size:13px;font-weight:500;color:var(--text1)">${user.name || user.email}</div>
         <div style="font-size:11px;color:var(--text3)">Google connected</div>
       </div>
-      <button onclick="import('./js/auth.js').then(m=>m.googleSignOut())" style="margin-left:auto;font-size:10px;padding:4px 8px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer">Sign out</button>
+      <button onclick="googleSignOut()" style="margin-left:auto;font-size:10px;padding:4px 8px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer">Sign out</button>
     `;
   } catch (e) {
     console.warn('[Profile]', e);
@@ -402,6 +389,9 @@ function updateMediaGrid(items, source) {
 // ── INIT ──────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   registerPWA();
+
+  // Handle OAuth redirect immediately (not nested inside SW registration)
+  handleOAuthRedirect();
 
   // Restore session state
   if (isGoogleConnected()) {
