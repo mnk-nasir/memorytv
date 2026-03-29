@@ -210,6 +210,7 @@ function handleOAuthRedirect() {
     fetchUserProfile();
     fetchGooglePhotos();
     fetchGoogleDrive();
+    fetchGoogleAlbums();
   }
 }
 
@@ -249,7 +250,7 @@ export async function fetchUserProfile() {
 export async function fetchGooglePhotos(pageToken = null) {
   if (!isGoogleConnected()) return [];
   const token = getGoogleToken();
-  const body  = { pageSize: 50, ...(pageToken && { pageToken }) };
+  const body  = { pageSize: 100, ...(pageToken && { pageToken }) };
 
   const res = await fetch('https://photoslibrary.googleapis.com/v1/mediaItems:search', {
     method:  'POST',
@@ -268,19 +269,56 @@ export async function fetchGooglePhotos(pageToken = null) {
 export async function fetchGoogleAlbums() {
   if (!isGoogleConnected()) return [];
   const token = getGoogleToken();
-  const res = await fetch('https://photoslibrary.googleapis.com/v1/albums?pageSize=50', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) return [];
-  const data = await res.json();
-  return (data.albums || []).map(a => ({
-    id:     a.id,
-    title:  a.title,
-    count:  parseInt(a.mediaItemsCount || 0),
-    cover:  a.coverPhotoBaseUrl + '=w400-h240-c',
-    source: 'photos',
-    type:   'album',
-  }));
+  let albums = [];
+  let pageToken = null;
+
+  do {
+    const url = `https://photoslibrary.googleapis.com/v1/albums?pageSize=50${pageToken ? '&pageToken=' + pageToken : ''}`;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) break;
+    const data = await res.json();
+    const page = (data.albums || []).map(a => ({
+      id:     a.id,
+      title:  a.title,
+      count:  parseInt(a.mediaItemsCount || 0),
+      cover:  a.coverPhotoBaseUrl ? a.coverPhotoBaseUrl + '=w400-h240-c' : '',
+      source: 'photos',
+      type:   'album',
+    }));
+    albums = albums.concat(page);
+    pageToken = data.nextPageToken || null;
+  } while (pageToken);
+
+  // Store lookup for fetchAlbumPhotos
+  window._gAlbums = Object.fromEntries(albums.map(a => [a.id, a]));
+  document.dispatchEvent(new CustomEvent('memorytv:albums-loaded', { detail: { albums } }));
+  return albums;
+}
+
+export async function fetchAlbumPhotos(albumId) {
+  if (!isGoogleConnected()) return [];
+  const token = getGoogleToken();
+  const albumTitle = window._gAlbums?.[albumId]?.title || 'Album';
+  showToast(`Loading "${albumTitle}"…`);
+
+  let items = [];
+  let pageToken = null;
+
+  do {
+    const body = { albumId, pageSize: 100, ...(pageToken && { pageToken }) };
+    const res = await fetch('https://photoslibrary.googleapis.com/v1/mediaItems:search', {
+      method:  'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body),
+    });
+    if (!res.ok) { console.error('[Album Photos]', await res.text()); break; }
+    const data = await res.json();
+    items = items.concat((data.mediaItems || []).map(normalizeGooglePhoto));
+    pageToken = data.nextPageToken || null;
+  } while (pageToken);
+
+  updateMediaGrid(items, albumTitle);
+  return items;
 }
 
 export async function fetchGoogleDrive() {
@@ -400,6 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchUserProfile();
     fetchGooglePhotos();
     fetchGoogleDrive();
+    fetchGoogleAlbums();
   }
   if (isAppleConnected()) {
     updateSourceUI('apple', true);
@@ -409,7 +448,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── EXPOSE GLOBALS (for onclick in HTML) ──────────────────────────────
 // Since auth.js is a module, functions aren't global by default.
 // We expose them on window so HTML onclick attributes work.
-window.googleSignIn  = googleSignIn;
-window.googleSignOut = googleSignOut;
-window.appleSignIn   = appleSignIn;
-window.appleSignOut  = appleSignOut;
+window.googleSignIn      = googleSignIn;
+window.googleSignOut     = googleSignOut;
+window.appleSignIn       = appleSignIn;
+window.appleSignOut      = appleSignOut;
+window.fetchAlbumPhotos  = fetchAlbumPhotos;
